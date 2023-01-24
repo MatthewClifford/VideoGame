@@ -6,15 +6,15 @@ pygame.init()
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1000, 600))
-background = pygame.image.load("Background.jpg")
+background = pygame.image.load("background.jpg")
 
 # Player
-player_surf = pygame.image.load("player_right.png")
+player_surf = pygame.image.load("player_sprites/player_right.png")
 player_rect = player_surf.get_rect(bottomright = (425, 530))
 player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
 
 # Enemy #1
-enemy1_surf = pygame.image.load("enemy_1_right.png")
+enemy1_surf = pygame.image.load("enemy1sprites/enemy1_right.png")
 enemy1_rect = enemy1_surf.get_rect(bottomleft = (900, 525))
 enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
 
@@ -38,7 +38,7 @@ while True:
             player_rect.x += 3
         if keys[pygame.K_a]:
             player_rect.x -= 3
-            player_surf = pygame.image.load("player_left.png")
+            player_surf = pygame.image.load("player_sprites/player_left")
             screen.blit(player_surf, player_rect)
 
 # Enemy 1 collision
