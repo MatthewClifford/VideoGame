@@ -4,6 +4,11 @@ from time import sleep
 pygame.init()
 clock = pygame.time.Clock()
 
+# Background Music
+bg_music = pygame.mixer.Sound('music_zapsplat_astro_race.mp3')
+bg_music.play(loops=-1)
+bg_music.set_volume(0.3)
+
 screen = pygame.display.set_mode((1200, 535))
 background = pygame.image.load("background1.jpg")
 background = pygame.transform.rotozoom(background, 0, 2)
@@ -62,9 +67,10 @@ while True:
 
     # Collision with enemy
     if player_rect.x == enemy1_rect.x:
-        health -= 0.05
+        health -= 0.03
         print(int(health))
         health_display = health_font.render(f"Health {int(health)}", True, (0, 0, 0))
+
 
     pygame.display.update()
     clock.tick(60)
