@@ -2,7 +2,6 @@ import pygame
 from sys import exit
 from time import sleep
 pygame.init()
-
 clock = pygame.time.Clock()
 
 screen = pygame.display.set_mode((1200, 535))
@@ -13,6 +12,8 @@ background = pygame.transform.rotozoom(background, 0, 2)
 player_surf = pygame.image.load("player_sprites/player_right.png").convert_alpha()
 player_rect = player_surf.get_rect(bottomright = (575, 470))
 player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5).convert_alpha()
+
+# Health...
 health = 50
 health_font = pygame.font.Font('Pixeltype.ttf', 50)
 health_display = health_font.render(f"Health {health}", True, (0, 0, 0))
@@ -58,6 +59,12 @@ while True:
             enemy1_surf = pygame.image.load("enemy1sprites/enemy1_left.png")
             enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
             enemy1_rect.x -= 1
+
+    # Collision with enemy
+    if player_rect.x == enemy1_rect.x:
+        health -= 0.05
+        print(int(health))
+        health_display = health_font.render(f"Health {int(health)}", True, (0, 0, 0))
 
     pygame.display.update()
     clock.tick(60)
