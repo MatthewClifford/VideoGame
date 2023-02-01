@@ -19,8 +19,6 @@ bg_music.set_volume(0.3)
 
 
 # Screen/background
-x = 1200
-y = 535
 screen = pygame.display.set_mode((1200, 535))
 background = pygame.image.load("background1.jpg")
 background = pygame.transform.rotozoom(background, 0, 2)
@@ -42,6 +40,41 @@ enemy1_surf = pygame.image.load("enemy1sprites/enemy1_right.png").convert_alpha(
 enemy1_rect = enemy1_surf.get_rect(bottomleft = ((enemyx_position), 462))
 enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5).convert_alpha()
 
+# Player Movement function
+def player_movement():
+    global player_surf
+    if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_LEFT:
+            player_surf = pygame.image.load("player_sprites/player_left.png")
+            player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
+            player_rect.x -= 4
+
+        if event.key == pygame.K_RIGHT:
+            player_surf = pygame.image.load("player_sprites/player_right.png")
+            player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
+            player_rect.x += 4
+
+def enemy1_follow_collision():
+    global health, enemy1_surf, health_display
+    if player_rect.x > enemy1_rect.x:
+        enemy1_surf = pygame.image.load("enemy1sprites/enemy1_right.png")
+        enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
+        enemy1_rect.x += 2
+
+    if player_rect.x < enemy1_rect.x:
+        enemy1_surf = pygame.image.load("enemy1sprites/enemy1_left.png")
+        enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
+        enemy1_rect.x -= 2
+
+    # Collision with enemy
+    if player_rect.x == enemy1_rect.x:
+        enemy1_surf = pygame.image.load("enemy1sprites/enemy1_left.png")
+        enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
+        health -= 0.03
+        print(int(health))
+        health_display = health_font.render(f"Health {int(health)}", True, (0, 0, 0))
+
+
 # Game Loop
 level_one = True
 while level_one:
@@ -57,39 +90,16 @@ while level_one:
     screen.blit(health_display, (550, 75))
 
     # Player Movement
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_LEFT:
-            player_surf = pygame.image.load("player_sprites/player_left.png")
-            player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
-            player_rect.x -= 4
-
-        if event.key == pygame.K_RIGHT:
-            player_surf = pygame.image.load("player_sprites/player_right.png")
-            player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
-            player_rect.x += 4
-
-        # Window Edge
-        if player_rect.x >= 1075:
-            player_rect.x = 1075
-        elif player_rect.x <= 0:
-            player_rect.x = 0
+    player_movement()
 
     # Enemy 1 AI
-    if player_rect.x != enemy1_rect.x:
-        if player_rect.x > enemy1_rect.x:
-            enemy1_surf = pygame.image.load("enemy1sprites/enemy1_right.png")
-            enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
-            enemy1_rect.x += 2
-        elif player_rect.x < enemy1_rect.x:
-            enemy1_surf = pygame.image.load("enemy1sprites/enemy1_left.png")
-            enemy1_surf = pygame.transform.rotozoom(enemy1_surf, 0, 2.5)
-            enemy1_rect.x -= 2
+    enemy1_follow_collision()
 
-    # Collision with enemy
-    if player_rect.x == enemy1_rect.x:
-        health -= 0.03
-        print(int(health))
-        health_display = health_font.render(f"Health {int(health)}", True, (0, 0, 0))
+    # Window Edge
+    if player_rect.x >= 1075:
+        player_rect.x = 1075
+    elif player_rect.x <= 0:
+        player_rect.x = 0
 
     # Player Attacking
     if player_rect.x >= enemy1_rect.x + 200:
@@ -102,7 +112,16 @@ while level_one:
     else:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
-                enemy1_hp -= 1
+                enemy1_hp -= 0.3
+                print("EnemyHP:", int(enemy1_hp))
+                player_surf = pygame.image.load("player_sprites/player_attack.png")
+                player_surf = pygame.transform.rotozoom(player_surf, 0, 2.5)
+
+    if enemy1_hp <= 0:
+        print("Kill")
+        enemy1_hp += 10
+        enemy1_follow_collision()
+        enemy1_rect.x = randrange(1200, 1500)
 
     pygame.display.update()
     clock.tick(60)
